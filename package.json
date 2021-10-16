@@ -1,0 +1,20 @@
+{
+  "name": "socket_nfc_writer",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@taptrack/ndef": "^1.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "nfc-pcsc": "^0.8.1",
+    "socket.io": "^4.3.0"
+  }
+}
