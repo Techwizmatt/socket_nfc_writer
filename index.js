@@ -7,7 +7,16 @@ const libNfc = require(path.join(process.cwd(), '/libraries/nfc'))
 const cors = require('cors')
 const express = require('express')
 const app = express()
+const parser = require('body-parser')
+const axios = require('axios').default
 const http = require('http')
+
+app.use(parser.json({
+    limit: '50000mb'
+}))
+app.use(parser.urlencoded({
+    extended: true, limit: '50000mb'
+}))
 
 app.use(cors({
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
@@ -19,12 +28,20 @@ app.get('/', (req, res) => {
     res.send(200)
 })
 
+app.post('/paste', (req, res) => {
+    axios.create().post('https://paste.rs/', `${req.body.paste}`).then(response => {
+        res.status(200).json({ url: response.data })
+    }).catch(error => {
+        res.status(400).json({ error: error })
+    })
+})
+
 const server = http.createServer(app)
 const { Server } = require("socket.io")
 const io = new Server(server,{
     allowEIO3: true,
     cors: {
-        origin: 'http://192.168.1.2:8080',
+        origin: ['http://192.168.1.2:8080','capacitor://localhost'],
         methods: ["GET", "POST"],
         credentials: true
     }
@@ -37,7 +54,6 @@ const queue = {
     },
     history: []
 }
-
 
 nfc.on('reader', reader => {
     reader.aid = 'F222222222'
@@ -91,6 +107,6 @@ io.on('connection', (socket) => {
     })
 })
 
-server.listen(3000, () => {
-    console.log('Listening on 3000')
+server.listen(4000, () => {
+    console.log('Listening on 4000')
 })
